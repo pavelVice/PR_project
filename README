@@ -1,0 +1,21 @@
+Folders:
+
+- dataset: starting material for the project
+- tools: g2o and geometry helpers
+- inspect dataset: visualization of the GT and the measurements contained in the dataset
+- 2DLSBasedBearingOnlySLAM: 2D least squares based SLAM using bearing measurements only 
+
+
+How to run:
+
+- to inspect the dataset:
+    cd inspect_dataset
+    octave-cli 
+    inspect_dataset 
+    (close the figures in order to proceed)
+
+- to perform bearing-only SLAM:
+    cd 2DLSBasedBearingOnlySLAM
+    octave-cli 
+    main
+
