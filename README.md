@@ -20,6 +20,7 @@ The material in the repository is organized as follows:
 - [tools](https://github.com/pavelVice/PR_project/tree/master/tools): g2o and geometry helpers
 - [inspect dataset](https://github.com/pavelVice/PR_project/tree/master/inspect_dataset): visualization of the ground truth and measurements contained in the dataset
 - [2DLSBasedBearingOnlySLAM](https://github.com/pavelVice/PR_project/tree/master/2DLSBasedBearingOnlySLAM): 2D least squares based SLAM using bearing measurements only 
+- [figures](https://github.com/pavelVice/PR_project/tree/master/figures): figures described in this README
 
 ## Inspect the dataset
 
