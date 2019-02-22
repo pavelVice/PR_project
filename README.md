@@ -32,27 +32,25 @@ At first, the input dataset is loaded in Octave using the [g2o wrapper](https://
 
 As you can easily notice, some observations are meaningless for the problem at issue (for instance, the bearings of the landamarks observed by one single robot pose): they will be discarded. 
 
-Even the quality of the observations is inspected by comparing, for a few poses, the real pose (red) and the corresponding one in the odometry trajectory (green), as well as the ideal bearing observations (blue) and the real ones (black) for the pose at issue.
+Even the quality of the observations is inspected by comparing, for a few poses, the real pose (red) and the corresponding one in the odometry trajectory (green), as well as the ideal bearing observations (blue) and the real ones (black) for the pose at issue. As expected, at the beginning of the trajectory (top) they overlap, apart from the noise, while with the evolution of the trajectory (es. in the middle, bottom) the error grows substantially.
 
 ![Alt text](./figures/fig2.png?raw=true "")
 
 ![Alt text](./figures/fig3.png?raw=true "")
 
-As expected, at the beginning of the trajectory (top) they overlap, apart from the noise, while with the evolution of the trajectory (es. in the middle, bottom) the error grows substantially.
-
 ## Development steps
 
 The starting point for the project is the [Total Least Squares](https://gitlab.com/grisetti/probabilistic_robotics_2018_19/tree/master/applications/octave/26_total_least_squares) octave application developed during the lectures, which implements a least squares system for pose-landmark, pose-landmark-projection and pose-pose constraints on top of a synthetic 3D environment, assuming ideal observations (each landmark position is observed from each pose, without noise) and deriving a good initial guess for the solver via small perturbations of the ground truth.
 
-At first, the application is adapted to a 2D scenario. As a first attempt, only the pose-landmark constraints are considered and modified to use bearings as observations. In a synthetic 2D scenario, keeping the ideal observations (each landmark bearing is observed from each pose, without noise) and the good initial guess, the system seems to converge to a bad solution. 
+At first, the application is adapted to a 2D scenario. As a first attempt, only the pose-landmark constraints are considered and modified to use bearings as observations. In a synthetic 2D scenario, keeping the ideal observations (each landmark bearing is observed from each pose, without noise) and the good initial guess, the system seems not to converge to the solution. 
 
 ![Alt text](./figures/fig4.png?raw=true "")
 
-Due to the bearing-only constraint, the system is scale-free and therefore one landmark need to be fixed in order to get a better solution.
+Due to the bearing-only constraints, the system is scale-free and therefore one landmark need to be fixed in order to get a better solution.
 
 ![Alt text](./figures/fig5.png?raw=true "")
   
-The synthetic 2D scenario is therefore replaced by the input ground truth (landmark positions and robot poses). Initializing the poses with the measured odometry trajectory, while keeping the ideal initialization for the landmarks (small perturbation of the ground truth) as well as the ideal measurements (each landmark bearing is observed from each pose, without noise), the solution is still good.
+The synthetic 2D scenario is then replaced by the input ground truth (landmark positions and robot poses). Initializing the poses with the measured odometry trajectory, while keeping the ideal initialization for the landmarks (small perturbation of the ground truth) as well as the ideal measurements (each landmark bearing is observed from each pose, without noise), the solution is still good.
 
 ![Alt text](./figures/fig6.png?raw=true "")
 
@@ -65,7 +63,7 @@ But if you select as ideal observations (noise-free) exactly the ones provided i
 ![Alt text](./figures/fig8.png?raw=true "")
 
 
-This suggests the introduction of the pose-pose constraints (from the odometry) to make the system more robust. After such a modification, the system converges even using as ideal observations (noise-free) exactly the ones provided in the input dataset, even if some landmarks (e.g. right-bottom or left-bottom) are localized much worse than the others.
+This suggests the introduction of the pose-pose constraints (from the odometry) to make the system more robust. After such a modification, the system converges even using as ideal observations (noise-free) exactly the ones provided in the input dataset, even if some landmarks are localized much worse than the others.
 
 ![Alt text](./figures/fig9.png?raw=true "")
 
@@ -73,11 +71,11 @@ Looking at the ground truth initial visualization, you can notice how the bad-lo
 
 ![Alt text](./figures/fig10.png?raw=true "")
 
-The last step for the project is to remove ideality from landmark initialization and observations. The ideal observations (noise-free) are simply replaced by the bearings provided in the input dataset. The initialization of a landmark instead works as follows: each couple of bearing observations related to the landmark is triangulated in order to get an estimate of the landmark position (based on the given couple of measurements) and then the landmark is initialized to the mean of all the estimates. The mechanism is shown in the following figure, a zoom on the right part of the trajectory showing how the bearings (green) starting from the odometry guesses (red) are intersected and an initial guess for a the landmark at issue (magenta) is recovered as a mean of all the intersections (black). The initial guess for the landmark is in this case quite distant from the true position because of the fact that the odometry guess is quite far from the real trajectory, but it is the best initial guess you can retrieve from the available observations.
+The last step for the project is to remove ideality from landmark initialization and observations. The ideal observations (noise-free) are simply replaced by the bearings provided in the input dataset. The initialization of a landmark instead works as follows: each couple of bearing observations related to the landmark is triangulated in order to get an estimate of the landmark position (based on the given couple of measurements) and then the landmark is initialized to the mean of all the estimates. The mechanism is shown in the following figure, a zoom on the right section of the trajectory showing how the bearings (green) starting from the odometry guesses (red) are intersected and an initial guess for a the landmark at issue (magenta) is set to the mean of all the intersections (black). The initial guess for the landmark is in this case quite distant from the true position because of the fact that the odometry guess is quite far from the real trajectory, but still it is the best initial guess you can retrieve from the available observations.
 
 ![Alt text](./figures/fig11.png?raw=true "")
 
-Using the real bearings and the aforementioned initialization procedure for the landmarks, the landmark initialization is affected by much more noise, but the trajectory and map found still represent a good result.
+Using the real bearings and the aforementioned triangulation procedure, the landmark initialization is affected by much more noise but the output trajectory and map still represent a good result.
 
 ![Alt text](./figures/fig12.png?raw=true "")
 
